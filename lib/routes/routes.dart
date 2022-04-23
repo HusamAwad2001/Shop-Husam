@@ -1,6 +1,7 @@
 import 'package:get/get_navigation/get_navigation.dart';
 import 'package:shop_app_getx/logic/binding/auth_binding.dart';
 import 'package:shop_app_getx/logic/binding/main_binding.dart';
+import 'package:shop_app_getx/logic/binding/product_binding.dart';
 import 'package:shop_app_getx/view/screens/auth/forgot_password.dart';
 import 'package:shop_app_getx/view/screens/auth/login_screen.dart';
 import 'package:shop_app_getx/view/screens/auth/signup_screen.dart';
@@ -40,6 +41,7 @@ class AppRoutes {
       bindings: [
         AuthBinding(),
         MainBinding(),
+        ProductBinding(),
       ],
     ),
   ];

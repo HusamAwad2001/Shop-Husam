@@ -1,31 +1,51 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shop_app_getx/logic/controller/product_controller.dart';
 import 'package:shop_app_getx/utils/theme.dart';
 import 'package:shop_app_getx/view/widgets/app_text.dart';
 
 class CardItem extends StatelessWidget {
-  const CardItem({Key? key}) : super(key: key);
+  CardItem({Key? key}) : super(key: key);
+
+  var controller = Get.find<ProductController>();
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GridView.builder(
-        physics: const BouncingScrollPhysics(),
-        itemCount: 10,
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          childAspectRatio: 0.8,
-          mainAxisSpacing: 9.0,
-          crossAxisSpacing: 6.0,
-          maxCrossAxisExtent: 200,
-        ),
-        itemBuilder: (context, index) {
-          return buildCardsItems();
-        },
-      ),
-    );
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return CircularProgressIndicator(
+          color: Get.isDarkMode ? mainColor : pinkClr,
+        );
+      } else {
+        return Expanded(
+          child: GridView.builder(
+            physics: BouncingScrollPhysics(),
+            itemCount: controller.productList.value.length,
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              childAspectRatio: 0.8,
+              mainAxisSpacing: 9.0,
+              crossAxisSpacing: 6.0,
+              maxCrossAxisExtent: 200,
+            ),
+            itemBuilder: (context, index) {
+              return buildCardsItems(
+                image: controller.productList[index].image,
+                price: controller.productList[index].price,
+                rate: controller.productList[index].rating.rate,
+              );
+            },
+          ),
+        );
+      }
+    });
   }
 
-  Widget buildCardsItems() {
+  Widget buildCardsItems({
+    required String image,
+    required double price,
+    required double rate,
+  }) {
     return Padding(
       padding: const EdgeInsets.all(5),
       child: Container(
@@ -70,7 +90,7 @@ class CardItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Image.network(
-                'https://www.aljazeera.net/wp-content/uploads/2016/11/a4a8737a-291d-43bc-bdb0-dd8e54e75763.jpeg?resize=686%2C513',
+                image,
                 fit: BoxFit.cover,
               ),
             ),
@@ -79,9 +99,9 @@ class CardItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    '\$ 15',
-                    style: TextStyle(
+                  Text(
+                    '\$ $price',
+                    style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.bold,
                     ),
@@ -99,7 +119,7 @@ class CardItem extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           AppText(
-                            text: '4.7',
+                            text: rate.toString(),
                             fontSize: 13,
                             fontWeight: FontWeight.bold,
                           ),
